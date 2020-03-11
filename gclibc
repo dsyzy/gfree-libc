@@ -1,0 +1,29 @@
+#!/bin/bash
+
+FILE_NAME=$1
+LIBC_VERSION=$2
+WORKDIR=$(pwd)
+DEBUG=/glibc/source
+EBIT=$(file $FILE_NAME |awk '{print$3}'|cut -c 1-2)
+if [ $EBIT -eq "32" ];then
+    LIBC_DIR=/glibc/x86
+elif [ $EBIT -eq "64" ];then
+    LIBC_DIR=/glibc/x64
+else
+    echo "It's not a elf file"
+    exit
+fi
+libc_dir=$(find $LIBC_DIR -name "$LIBC_VERSION*")
+if [ "$libc_dir" = "" ];then
+    echo "Not support version or your $LIBC_DIR don't have libc"
+    exit
+fi
+
+if  [ "$3" ] 
+then
+	patchelf --set-interpreter $libc_dir/lib/ld-$LIBC_VERSION.so --set-rpath $WORKDIR/ $1
+else
+	patchelf --set-interpreter $libc_dir/lib/ld-$LIBC_VERSION.so --set-rpath $libc_dir/lib/ $1
+fi
+echo "debug:set debug-file-directory $DEBUG/glibc-$2"
+echo "success!!!"
