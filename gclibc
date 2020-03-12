@@ -15,7 +15,7 @@ else
 fi
 libc_dir=$(find $LIBC_DIR -name "$LIBC_VERSION*")
 if [ "$libc_dir" = "" ];then
-    echo "Not support version or your $LIBC_DIR don't have libc"
+    echo "Not support version or your $LIBC_DIR don't have libc,you can use :build $2 to get it"
     exit
 fi
 
